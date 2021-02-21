@@ -1,6 +1,6 @@
 <?php
 
-echo "hello welcome";
+echo "hello welcome \n";
 
 echo "next commit done";
 
