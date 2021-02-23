@@ -1,7 +1,8 @@
 <?php
 // Include config file
-require_once(realpath(dirname(__FILE__) . "./db_connect.php"));
- 
+// require_once(realpath(dirname(__FILE__) . "./db_connect.php"));
+require_once "db_connect.php";
+
 // Define variables and initialize with empty values
 $name = $address = $salary = "";
 $name_err = $address_err = $salary_err = "";
