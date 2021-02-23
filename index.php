@@ -35,7 +35,6 @@
                         </div>
                         <?php
                         // Include config file
-                        // require_once(realpath(dirname(__FILE__) . "./db_connect.php"));
                         require_once "db_connect.php";
                         
                         // Attempt select query execution
