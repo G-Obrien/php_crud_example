@@ -1,82 +1,90 @@
-<?php
-    // include_once __DIR__ . '/vendor/autoload.php';
-
-    // $dotenv = new Dotenv\Dotenv(__DIR__);
-    // $dotenv->load();
-    
-    // var_dump(getenv('PROJECT_NAME'));
-    // var_dump($_ENV['PROJECT_NAME']);
-
-    // $log = new Monolog\Logger('name');
-    // $log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::WARNING));
-    // $log->addWarning('Foo');
-
-    require_once(realpath(dirname(__FILE__) . "./header.php"));
-    require_once(realpath(dirname(__FILE__) . "./db_connect.php"));
-?>
-
-<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-    <label>Name: </label> <br> 
-    <input type="text" name="fname"><br>
-    <label> Last Name: </label> <br>
-    <input type="text" name="lname"><br>
-    <label>Email: </label> <br> 
-    <input type="email" name="email"><br>
-    <label> Phone Number: </label> <br>
-    <input type="text" name="phone"><br>
-    <label> Password: </label> <br>
-    <input type="password" name="password"><br>
-
-    <input type="submit">
-</form>
-
-<?php
-    $fNameErr = $lNameErr = $emailErr= $phoneErr = $passwordErr = "";
-    $firstName = $lastName = $email = $phoneNumber = $password = "";
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Dashboard</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+        <style type="text/css">
+            .wrapper{
+                width: 650px;
+                margin: 0 auto;
+            }
+            .page-header h2{
+                margin-top: 0;
+            }
+            table tr td:last-child a{
+                margin-right: 15px;
+            }
+        </style>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();   
+            });
+        </script>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="page-header clearfix">
+                            <h2 class="pull-left">Users Details</h2>
+                            <a href="create.php" class="btn btn-success pull-right">Add New User</a>
+                        </div>
+                        <?php
+                        // Include config file
+                        require_once(realpath(dirname(__FILE__) . "./db_connect.php"));
+                        
+                        // Attempt select query execution
+                        $sql = "SELECT * FROM user";
+                        if($result = mysqli_query($conn, $sql)){
+                            if(mysqli_num_rows($result) > 0){
+                                echo "<table class='table table-bordered table-striped'>";
+                                    echo "<thead>";
+                                        echo "<tr>";
+                                            echo "<th>#</th>";
+                                            echo "<th>Name</th>";
+                                            echo "<th>Address</th>";
+                                            echo "<th>Salary</th>";
+                                            echo "<th>Action</th>";
+                                        echo "</tr>";
+                                    echo "</thead>";
+                                    echo "<tbody>";
+                                    while($row = mysqli_fetch_array($result)){
+                                        echo "<tr>";
+                                            echo "<td>" . $row['id'] . "</td>";
+                                            echo "<td>" . $row['name'] . "</td>";
+                                            echo "<td>" . $row['address'] . "</td>";
+                                            echo "<td>" . $row['salary'] . "</td>";
+                                            echo "<td>";
+                                                echo "<a href='read.php?id=". $row['id'] ."' title='View Record' data-toggle='tooltip'><span class='glyphicon glyphicon-eye-open'></span></a>";
+                                                echo "<a href='update.php?id=". $row['id'] ."' title='Update Record' data-toggle='tooltip'><span class='glyphicon glyphicon-pencil'></span></a>";
+                                                echo "<a href='delete.php?id=". $row['id'] ."' title='Delete Record' data-toggle='tooltip'><span class='glyphicon glyphicon-trash'></span></a>";
+                                            echo "</td>";
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody>";                            
+                                echo "</table>";
+                                // Free result set
+                                mysqli_free_result($result);
+                            } else{
+                                echo "<p class='lead'><em>No records were found.</em></p>";
+                            }
+                        } else{
+                            echo "ERROR: Could not able to execute $sql. " . mysqli_error($conn);
+                        }
         
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-        // if(empty($_POST["fname"])) {
-        //     $fNameErr= "First Name is required";
-        // } else {
-            $firstName = test_input($_POST["fname"]);
-        // }
-
-        // if(empty($_POST["lname"])) {
-        //     $lNameErr= "Last Name is required";
-        // } else {
-            $lastName = test_input($_POST["lname"]);
-        // }
-
-        // if(empty($_POST["email"])) {
-        //     $emailErr= "Email Address is required";
-        // } else {
-            $email = test_input($_POST["email"]);
-        // }
-
-        // if(empty($_POST["phone"])) {
-        //     $phoneErr= "Phone Number is required";
-        // } else {
-            $phoneNumber = test_input($_POST["phone"]);
-        // }
-
-        // if(empty($_POST["password"])) {
-        //     $passwordErr= "Password is required";
-        // } else {
-            $password = test_input($_POST["password"]);
-        // }
-    }
-
-    function test_input($data) {
-        $data = trim($data);
-        $data= stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
-    }
-
-?>
+                        // Close connection
+                        mysqli_close($conn);
+                        ?>
+                    </div>
+                </div>        
+            </div>
+        </div>
+    </body>
+</html>
 
 
-
-<?php
-    require_once(realpath(dirname(__FILE__) . "./footer.php"));
-?>
+                    
